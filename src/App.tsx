@@ -1,76 +1,85 @@
 import React, { useState } from 'react';
 
-const Parkdle: React.FC = () => {
-	const questions = [
-		{
-			questionText: 'What is the capital of France?',
-			answerOptions: [
-				{ answerText: 'New York', isCorrect: false },
-				{ answerText: 'London', isCorrect: false },
-				{ answerText: 'Paris', isCorrect: true },
-				{ answerText: 'Dublin', isCorrect: false },
-			],
-		},
-		{
-			questionText: 'Who is CEO of Tesla?',
-			answerOptions: [
-				{ answerText: 'Jeff Bezos', isCorrect: false },
-				{ answerText: 'Elon Musk', isCorrect: true },
-				{ answerText: 'Bill Gates', isCorrect: false },
-				{ answerText: 'Tony Stark', isCorrect: false },
-			],
-		},
-		{
-			questionText: 'The iPhone was created by which company?',
-			answerOptions: [
-				{ answerText: 'Apple', isCorrect: true },
-				{ answerText: 'Intel', isCorrect: false },
-				{ answerText: 'Amazon', isCorrect: false },
-				{ answerText: 'Microsoft', isCorrect: false },
-			],
-		},
-		{
-			questionText: 'How many Harry Potter books are there?',
-			answerOptions: [
-				{ answerText: '1', isCorrect: false },
-				{ answerText: '4', isCorrect: false },
-				{ answerText: '6', isCorrect: false },
-				{ answerText: '7', isCorrect: true },
-			],
-		},
-	];
+function getRandomRoundedDate(from: Date, to: Date) {
+	const fromTime = from.getTime();
+	const toTime = to.getTime();
+	const minutes = 30;
+	const ms = 1000 * 60 * minutes;
 
-	const [currentQuestion, setCurrentQuestion] = useState(0);
+	const randomDate = new Date(fromTime + Math.random() * (toTime - fromTime));
+	return new Date(Math.round(randomDate.getTime() / ms) * ms)
+}
+
+function get12HourFormattedTime(time: Date) {
+	var hours = time.getHours();
+	const amOrPm = hours >= 12 ? 'PM' : 'AM';
+	hours = (hours % 12) || 12;
+	var minutes = pad(time.getMinutes());
+	return (hours + ":" + minutes + " " + amOrPm); 
+}
+
+function pad(input: number) {
+	if(input < 10) {
+		return '0' + input;
+	} else {
+		return input;
+	}
+}
+
+const Parkdle: React.FC = () => {
+	const currentDate = new Date();
+	const currentYear = currentDate.getFullYear();
+	const currentMonth = currentDate.getMonth();
+	const currentDay = currentDate.getDate();
+
+
+	// picking random time between start of day and 21:30
+	const startTimeStart = new Date(currentYear, currentMonth, currentDay, 0, 0, 0, 0);
+	const startTimeEnd = new Date(currentYear, currentMonth, currentDay, 21, 29, 59, 999);
+	const randomStartTime = getRandomRoundedDate(startTimeStart, startTimeEnd);
+
+	// picking random time between startTimeEnd + 30min and end of day
+	const endTimeStart = new Date(currentYear, currentMonth, currentDay, randomStartTime.getHours(), randomStartTime.getMinutes() + 30, 59, 999);
+	const endTimeEnd = new Date(currentYear, currentMonth, currentDay, 23, 29, 59, 999);
+	const randomEndTime = getRandomRoundedDate(endTimeStart, endTimeEnd);
+
 	const [showScore, setShowScore] = useState(false);
 	const [score, setScore] = useState(0);
 
-	const handleAnswerOptionClick = (isCorrect: boolean) => {
-		if (isCorrect) {
-			setScore(score + 1);
-		}
+	const handleAnswerOptionClick = (answer: boolean) => {
+		const clickedCurrentDate = new Date();
+		const clickedHour = clickedCurrentDate.getHours();
+		const clickedMinute = clickedCurrentDate.getMinutes();
 
-		const nextQuestion = currentQuestion + 1;
-		if (nextQuestion < questions.length) {
-			setCurrentQuestion(nextQuestion);
+		const normalizedClickedDate = new Date(currentYear, currentMonth, currentDay, clickedHour, clickedMinute, 0, 0);
+		const canPark = (normalizedClickedDate >= randomStartTime && normalizedClickedDate <= randomEndTime)
+		
+		if (answer != canPark) {	
+			setScore(score + 1);
 		} else {
 			setShowScore(true);
 		}
+
 	};
 
-	console.log("here");
-	
 	return (
 		<div className='app'>
+			{showScore ? (
+				<div className='score-section'>
+					You scored {score} points
+				</div>
+			) : (
 				<>
 					<div className='question-section'>
-						<div className='question-text'>{questions[currentQuestion].questionText}</div>
+						<div className='question-text'>{"NO PARKING " + get12HourFormattedTime(randomStartTime) + " TO " + get12HourFormattedTime(randomEndTime)}</div>
+
 					</div>
 					<div className='answer-section'>
-						{questions[currentQuestion].answerOptions.map((answerOption) => (
-							<button onClick={() => handleAnswerOptionClick(answerOption.isCorrect)}>{answerOption.answerText}</button>
-						))}
+						<button onClick={() => handleAnswerOptionClick(true)}>{"✅"}</button>
+						<button onClick={() => handleAnswerOptionClick(false)}>{"❌"}</button>
 					</div>
 				</>
+			)}
 		</div>
 	);
 }
