@@ -12,17 +12,35 @@ body {
 }
 
 body {
-  background-color: #7cc6fe;
+  background-color: #c1e4ff;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
 }
 
-.app {
+.score-section {
+  display: flex;
+  height: min-content;
+  font-size: 24px;
+  align-items: center;
+}
+
+.button-section {
   background-color: #252d4a;
-  width: 450px;
-  min-height: 200px;
+  text-align: center;
+  height: min-content;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 10px 10px 42px 0px rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.gameover-buttons {
+  margin-top: 5px;
+  background-color: #252d4a;
+  text-align: center;
   height: min-content;
   border-radius: 15px;
   padding: 20px;
@@ -37,62 +55,37 @@ body {
   align-items: center;
 }
 
-/* QUESTION/TIMER/LEFT SECTION */
-.question-section {
+.parking-text {
+  margin-top: 5px;
   width: 100%;
-  position: relative;
-}
-
-.question-count {
-  margin-bottom: 20px;
-}
-
-.question-count span {
-  font-size: 28px;
+  font-size: 78px;
+  color: #FC0101;
+  text-align: center;
+  align-items: center;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-weight: bold;
 }
 
 .question-text {
-  margin-bottom: 12px;
-}
-
-.timer-text {
-  background: rgb(230, 153, 12);
-  padding: 15px;
-  margin-top: 20px;
-  margin-right: 20px;
-  border: 5px solid rgb(255, 189, 67);
-  border-radius: 15px;
   text-align: center;
-}
-
-/* ANSWERS/RIGHT SECTION */
-.answer-section {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  font-size: 48px;
+  color: #FC0101;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-weight: bold;
+  align-items: center;
 }
 
 button {
-  width: 100%;
-  font-size: 16px;
+  font-size: 78px;
   color: #ffffff;
-  background-color: #252d4a;
+  background-color: #3d4f91;
   border-radius: 15px;
-  display: flex;
-  padding: 5px;
-  justify-content: flex-start;
-  align-items: center;
+  display: inline-block;
   border: 5px solid #234668;
   cursor: pointer;
-}
-
-.correct {
-  background-color: #2f922f;
-}
-
-.incorrect {
-  background-color: #ff3333;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 button:hover {
@@ -105,4 +98,18 @@ button:focus {
 
 button svg {
   margin-right: 5px;
+}
+
+.red-outline {
+  width: 300px;
+  height: 400px;
+  background: #f7f7f7;
+  border-radius: 9% 9% 9% 9% / 9% 9% 9% 9%;
+  border-top: 11px solid #FC0101;
+  border-right: 11px solid #FC0101;
+  border-bottom: 11px solid #FC0101;
+  border-left: 11px solid #FC0101;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  box-shadow: 10px 10px 42px 0px rgba(0, 0, 0, 0.75);
 }

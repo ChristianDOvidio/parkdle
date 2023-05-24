@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+const currentDate = new Date();
+const currentYear = currentDate.getFullYear();
+const currentMonth = currentDate.getMonth();
+const currentDay = currentDate.getDate();
+
 function getRandomRoundedDate(from: Date, to: Date) {
 	const fromTime = from.getTime();
 	const toTime = to.getTime();
@@ -27,12 +32,6 @@ function pad(input: number) {
 }
 
 const Parkdle: React.FC = () => {
-	const currentDate = new Date();
-	const currentYear = currentDate.getFullYear();
-	const currentMonth = currentDate.getMonth();
-	const currentDay = currentDate.getDate();
-
-
 	// picking random time between start of day and 21:30
 	const startTimeStart = new Date(currentYear, currentMonth, currentDay, 0, 0, 0, 0);
 	const startTimeEnd = new Date(currentYear, currentMonth, currentDay, 21, 29, 59, 999);
@@ -54,33 +53,45 @@ const Parkdle: React.FC = () => {
 		const normalizedClickedDate = new Date(currentYear, currentMonth, currentDay, clickedHour, clickedMinute, 0, 0);
 		const canPark = (normalizedClickedDate >= randomStartTime && normalizedClickedDate <= randomEndTime)
 		
-		if (answer != canPark) {	
+		if (answer !== canPark) {	
 			setScore(score + 1);
 		} else {
 			setShowScore(true);
 		}
-
 	};
 
 	return (
-		<div className='app'>
+		<>
+			<div className='red-outline'>
+				<div className='parking-text'>{"NO PARKING"}</div>
+				<div className='question-text'>{get12HourFormattedTime(randomStartTime)}</div>
+				<div className='question-text'>{"TO " + get12HourFormattedTime(randomEndTime)}</div>
+			</div>
+
+
+			<div className='button-section'>
+				{showScore ? (
+					<div className='score-section'>
+						<p>You scored {score} points</p>
+					</div>
+				) : (
+					<>
+						<button title="can park" onClick={() => handleAnswerOptionClick(true)}>{"✅"}</button>
+						<button title="can't park" onClick={() => handleAnswerOptionClick(false)}>{"❌"}</button>
+					</>
+				)}
+			</div>
+
 			{showScore ? (
-				<div className='score-section'>
-					You scored {score} points
+				<div className='gameover-buttons'>
+					<div className='score-section'>
+						<button onClick={() => window.location.reload()}>{"🔄"}</button>
+					</div>
 				</div>
 			) : (
-				<>
-					<div className='question-section'>
-						<div className='question-text'>{"NO PARKING " + get12HourFormattedTime(randomStartTime) + " TO " + get12HourFormattedTime(randomEndTime)}</div>
-
-					</div>
-					<div className='answer-section'>
-						<button onClick={() => handleAnswerOptionClick(true)}>{"✅"}</button>
-						<button onClick={() => handleAnswerOptionClick(false)}>{"❌"}</button>
-					</div>
-				</>
+				null
 			)}
-		</div>
+		</>
 	);
 }
 
