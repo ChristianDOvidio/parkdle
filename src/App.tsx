@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {QuizContext} from './helpers/Contexts';
 import Quiz from "./components/quiz/Quiz";
 import End from "./components/end/End";
@@ -32,7 +32,6 @@ const App = () => {
 	return (
 		<div className="App" id="app">
 			<QuizContext.Provider value={{setGameState, score, setScore, currentDate, counter, setCounter, startTime, setStartTime, endTime, setEndTime}}>
-				{/* {gameState === "main" && <Main/>} */}
 				{gameState === "quiz" && <Quiz/>}
 				{gameState === "end" && <End/>}
 			</QuizContext.Provider>

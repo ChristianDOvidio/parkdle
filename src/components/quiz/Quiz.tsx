@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { QuizContext } from '../../helpers/Contexts';
 import { get12HourFormattedTime, getRandomRoundedDate } from '../../helpers/DateHelper';
 
@@ -10,9 +10,16 @@ const Quiz: React.FC = () => {
 	const { startTime, setStartTime } = useContext(QuizContext);
 	const { endTime, setEndTime } = useContext(QuizContext);
 
+	const [ showDays, setShowDays ] = useState(false);
+	const [ firstRandomWeekday, setFirstRandomWeekday ] = useState(0);
+	const [ secondRandomWeekday, setSecondRandomWeekday ] = useState(0);
+
+	const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
 	const currentYear = currentDate.getFullYear();
 	const currentMonth = currentDate.getMonth();
 	const currentDay = currentDate.getDate();
+	const currentWeekday = currentDate.getDay();
 	
 	const handleAnswerOptionClick = (answer: boolean) => {
 		const clickedCurrentDate = new Date();
@@ -20,9 +27,15 @@ const Quiz: React.FC = () => {
 		const clickedMinute = clickedCurrentDate.getMinutes();
 
 		const normalizedClickedDate = new Date(currentYear, currentMonth, currentDay, clickedHour, clickedMinute, 0, 0);
-		const canPark = (normalizedClickedDate >= startTime && normalizedClickedDate <= endTime)
-		
-		if (answer !== canPark) {	
+		let canPark = !(normalizedClickedDate >= startTime && normalizedClickedDate <= endTime);
+		if (showDays) {
+			if (currentWeekday === firstRandomWeekday || currentWeekday === secondRandomWeekday) {
+				canPark = true;
+				console.log("weekday matched, can park");
+			}
+		}
+
+		if (answer === canPark) {	
 			setScore(score + 1);
 			// picking random time between start of day and 21:30
 			const startTimeStart = new Date(currentYear, currentMonth, currentDay, 0, 0, 0, 0);
@@ -33,6 +46,19 @@ const Quiz: React.FC = () => {
 			const endTimeStart = new Date(currentYear, currentMonth, currentDay, randomStartTime.getHours(), randomStartTime.getMinutes() + 30, 59, 999);
 			const endTimeEnd = new Date(currentYear, currentMonth, currentDay, 23, 29, 59, 999);
 			const randomEndTime = getRandomRoundedDate(endTimeStart, endTimeEnd);
+			
+			const firstRandomWeekday = Math.floor(Math.random() * dayNames.length);
+			let secondRandomWeekday = Math.floor(Math.random() * dayNames.length);
+			
+			do {
+				secondRandomWeekday = Math.floor(Math.random() * dayNames.length);
+			} while(firstRandomWeekday === secondRandomWeekday);
+
+			setFirstRandomWeekday(firstRandomWeekday);
+			setSecondRandomWeekday(secondRandomWeekday);
+
+			score >= 10 ? setShowDays(true) : setShowDays(false);
+
 			setCounter(10);
 			setStartTime(randomStartTime);
 			setEndTime(randomEndTime);
@@ -51,7 +77,7 @@ const Quiz: React.FC = () => {
 
 	return (
 		<>
-			<div>
+			<div className='timer'>
 				{counter}
 			</div>
 
@@ -59,6 +85,11 @@ const Quiz: React.FC = () => {
 				<div className='parking-text'>{"NO PARKING"}</div>
 				<div className='question-text'>{get12HourFormattedTime(startTime)}</div>
 				<div className='question-text'>{"TO " + get12HourFormattedTime(endTime)}</div>
+				{showDays ? (
+					<div className='question-text-small'>{"EXCEPT " + dayNames[firstRandomWeekday] + " & " + dayNames[secondRandomWeekday]}</div>
+				) : (
+					null
+				)}
 			</div>
 
 			<div className='button-section'>

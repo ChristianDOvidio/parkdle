@@ -19,6 +19,15 @@ body {
   min-height: 100vh;
 }
 
+.timer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-size: 48px;
+  padding: 20px;
+  color: #252d4a;
+}
+
 .score-section {
   display: flex;
   height: min-content;
@@ -74,6 +83,17 @@ body {
   font-family: 'Arial Narrow', Arial, sans-serif;
   font-weight: bold;
   align-items: center;
+}
+
+.question-text-small {
+  text-align: center;
+  width: 100%;
+  font-size: 30px;
+  color: #FC0101;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-weight: bold;
+  align-items: center;
+  margin-top: 25px
 }
 
 button {
