@@ -13,10 +13,8 @@ const End: React.FC = () => {
 				</div>
 			</div>
 
-			<div className='gameover-buttons'>
-				<div className='score-section'>
-					<button onClick={() => window.location.reload()}>{"🔄"}</button>
-				</div>
+			<div className='button-section'>
+				<button title="play again" onClick={() => window.location.reload()}>{"🔄"}</button>
 			</div>
 		</>
 	);

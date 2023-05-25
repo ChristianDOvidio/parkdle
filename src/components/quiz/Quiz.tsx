@@ -10,6 +10,7 @@ const Quiz: React.FC = () => {
 	const { startTime, setStartTime } = useContext(QuizContext);
 	const { endTime, setEndTime } = useContext(QuizContext);
 
+	const [ clock, setClock ] = useState(currentDate);
 	const [ showDays, setShowDays ] = useState(false);
 	const [ firstRandomWeekday, setFirstRandomWeekday ] = useState(0);
 	const [ secondRandomWeekday, setSecondRandomWeekday ] = useState(0);
@@ -21,6 +22,10 @@ const Quiz: React.FC = () => {
 	const currentDay = currentDate.getDate();
 	const currentWeekday = currentDate.getDay();
 	
+	function refreshClock() {
+		setClock(new Date());
+	  }
+
 	const handleAnswerOptionClick = (answer: boolean) => {
 		const clickedCurrentDate = new Date();
 		const clickedHour = clickedCurrentDate.getHours();
@@ -31,11 +36,10 @@ const Quiz: React.FC = () => {
 		if (showDays) {
 			if (currentWeekday === firstRandomWeekday || currentWeekday === secondRandomWeekday) {
 				canPark = true;
-				console.log("weekday matched, can park");
 			}
 		}
 
-		if (answer === canPark) {	
+		if (answer === canPark) {
 			setScore(score + 1);
 			// picking random time between start of day and 21:30
 			const startTimeStart = new Date(currentYear, currentMonth, currentDay, 0, 0, 0, 0);
@@ -57,9 +61,31 @@ const Quiz: React.FC = () => {
 			setFirstRandomWeekday(firstRandomWeekday);
 			setSecondRandomWeekday(secondRandomWeekday);
 
-			score >= 10 ? setShowDays(true) : setShowDays(false);
+			if (score < 10) {
+				setCounter(10);
+			} else if (score < 20) {
+				setShowDays(true)
+				setCounter(10);
+			} else if (score < 30) {
+				setShowDays(true)
+				setCounter(9);
+			} else if (score < 40) {
+				setShowDays(true)
+				setCounter(8);
+			} else if (score < 50) {
+				setShowDays(true)
+				setCounter(7);
+			} else if (score < 60) {
+				setShowDays(true)
+				setCounter(6);
+			} else if (score < 70) {
+				setShowDays(true)
+				setCounter(5);
+			} else {
+				setShowDays(true)
+				setCounter(5);
+			}
 
-			setCounter(10);
 			setStartTime(randomStartTime);
 			setEndTime(randomEndTime);
 		} else {
@@ -69,15 +95,23 @@ const Quiz: React.FC = () => {
 
 	useEffect(() => {
 		const timer = counter > 0 ? setInterval(() => setCounter(counter - 1), 1000) : 0;
+		const clockTimer = setInterval(refreshClock, 1000);
 		if (timer === 0) {
 			setGameState("end");
 		}
-		return () => clearInterval(timer);
+		return function cleanup() {
+			clearInterval(timer);
+			clearInterval(clockTimer);
+		}
 	}, [counter])
 
 	return (
 		<>
-			<div className='timer'>
+			<div className='clock'>
+				{clock.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+			</div>
+
+			<div className={(counter < 7 ? (counter < 5 ? 'timer-red' : 'timer-orange') : 'timer')}>
 				{counter}
 			</div>
 

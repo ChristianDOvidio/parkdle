@@ -3,6 +3,7 @@ import {QuizContext} from './helpers/Contexts';
 import Quiz from "./components/quiz/Quiz";
 import End from "./components/end/End";
 import { getRandomRoundedDate } from "./helpers/DateHelper";
+import Start from "./components/start/Start";
 
 const App = () => {
 
@@ -23,7 +24,7 @@ const App = () => {
 	const randomEndTime = getRandomRoundedDate(endTimeStart, endTimeEnd);
 
 	const [counter, setCounter] = useState(10);
-	const [gameState, setGameState] = useState("quiz");
+	const [gameState, setGameState] = useState("start");
 	const [score, setScore] = useState(0);
 	const [currentDate] = useState(nowDate);
 	const [startTime, setStartTime] = useState(randomStartTime);
@@ -32,6 +33,7 @@ const App = () => {
 	return (
 		<div className="App" id="app">
 			<QuizContext.Provider value={{setGameState, score, setScore, currentDate, counter, setCounter, startTime, setStartTime, endTime, setEndTime}}>
+				{gameState === "start" && <Start/>}
 				{gameState === "quiz" && <Quiz/>}
 				{gameState === "end" && <End/>}
 			</QuizContext.Provider>
